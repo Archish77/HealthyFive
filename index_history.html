@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction History</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fc; padding: 20px; }
+        h1   { color: #4e73df; }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #d1d3e2;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button { background: #4e73df; color: white; border: none; }
+        button:hover { background: #224abe; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #4e73df;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        td { padding: 12px 16px; border-bottom: 1px solid #eaecf4; }
+        tr:hover td { background: #f1f3fb; }
+
+        .badge-healthy { background: #e1f7ef; color: #1cc88a; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+        .badge-risk    { background: #fceaea; color: #e74a3b; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+
+        .del-btn {
+            background: #e74a3b;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        #status { margin-bottom: 14px; color: #858796; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<h1>📋 Prediction History</h1>
+
+<div class="filters">
+    <select id="filterDisease">
+        <option value="">All Diseases</option>
+        <option value="heart">Heart</option>
+        <option value="kidney">Kidney</option>
+        <option value="liver">Liver</option>
+        <option value="lung">Lung</option>
+        <option value="stroke">Brain Stroke</option>
+    </select>
+    <button onclick="loadRecords()">🔍 Filter</button>
+    <button onclick="loadRecords()" style="background:#1cc88a;">↻ Refresh</button>
+    <a href="/"><button style="background:#858796;">← Back to Home</button></a>
+</div>
+
+<div id="status">Loading...</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Disease</th>
+            <th>Result</th>
+            <th>Confidence</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+    function loadRecords() {
+        const disease = document.getElementById('filterDisease').value;
+        const url     = disease ? `/records?disease=${disease}` : `/records`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const tbody  = document.getElementById('tableBody');
+                const status = document.getElementById('status');
+                status.textContent = `Showing ${data.length} record(s)`;
+                tbody.innerHTML = '';
+
+                data.forEach(r => {
+                    const isHealthy = r.prediction === 0;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${r.id}</td>
+                            <td>${r.disease.toUpperCase()}</td>
+                            <td>
+                                <span class="${isHealthy ? 'badge-healthy' : 'badge-risk'}">
+                                    ${isHealthy ? '✅ No Disease' : '⚠️ Disease Detected'}
+                                </span>
+                            </td>
+                            <td>${r.confidence}%</td>
+                            <td>${r.created_at}</td>
+                            <td>
+                                <button class="del-btn" onclick="deleteRecord(${r.id})">🗑 Delete</button>
+                            </td>
+                        </tr>`;
+                });
+            });
+    }
+
+    function deleteRecord(id) {
+        if (!confirm(`Delete record #${id}?`)) return;
+        fetch(`/records/${id}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(() => loadRecords());   // refresh table
+    }
+
+    // Load on page open
+    loadRecords();
+</script>
+</body>
+</html>
