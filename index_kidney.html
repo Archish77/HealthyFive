@@ -254,10 +254,10 @@
         <div class="logo-icon">🫘</div>
         Kidney Health Dashboard
     </div>
-    <!-- FIX: nav links outside .logo -->
+    
     <div style="display:flex; gap:10px; align-items:center;">
         <a href="index.html" style="color:#4e73df; text-decoration:none; font-weight:bold; font-size:0.9rem;">🏠 Home</a>
-        <a href="index_kidney.html" style="background:#4e73df; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:0.9rem;">📋 History</a>
+        <a href="index_history.html" style="background:#4e73df; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:0.9rem;">📋 History</a>
     </div>
 </nav>
 
@@ -500,7 +500,7 @@
         </div>
 
         <div class="disclaimer">
-            ⚠️ <strong>Medical Disclaimer:</strong> This tool is for educational and informational purposes only. Always consult a qualified healthcare provider for any health concerns.
+             <strong>Medical Disclaimer:</strong> This tool is for educational and informational purposes only. Always consult a qualified healthcare provider for any health concerns.
         </div>
     </div>
 </div>
@@ -537,17 +537,17 @@
         .then(data => {
             if (data.error) {
                 resultDiv.className = "";
-                resultDiv.innerHTML = `❌ Server Error: ${data.error}`;
+                resultDiv.innerHTML = ` Server Error: ${data.error}`;
                 return;
             }
 
             // FIX: correct disease name
             if (data.prediction === 0) {
                 resultDiv.className = "healthy";
-                resultDiv.innerHTML = `✅ No Kidney Disease Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
+                resultDiv.innerHTML = ` No Kidney Disease Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
             } else {
                 resultDiv.className = "risk";
-                resultDiv.innerHTML = `⚠️ Kidney Disease Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
+                resultDiv.innerHTML = ` Kidney Disease Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
             }
 
             if (data.record_id) {
@@ -555,16 +555,16 @@
                     .then(res => res.json())
                     .then(record => {
                         if (record.id) {
-                            resultDiv.innerHTML += `<br><small style="color:green;">✅ Record #${record.id} saved to history.</small>`;
+                            resultDiv.innerHTML += `<br><small style="color:green;"> Record #${record.id} saved to history.</small>`;
                         } else {
-                            resultDiv.innerHTML += `<br><small style="color:orange;">⚠️ Prediction done but not saved to history.</small>`;
+                            resultDiv.innerHTML += `<br><small style="color:orange;"> Prediction done but not saved to history.</small>`;
                         }
                     })
                     .catch(() => {
-                        resultDiv.innerHTML += `<br><small style="color:orange;">⚠️ Could not verify history save.</small>`;
+                        resultDiv.innerHTML += `<br><small style="color:orange;"> Could not verify history save.</small>`;
                     });
             } else {
-                resultDiv.innerHTML += `<br><small style="color:red;">❌ Prediction done but data NOT saved to history.</small>`;
+                resultDiv.innerHTML += `<br><small style="color:red;"> Prediction done but data NOT saved to history.</small>`;
             }
         })
         .catch(err => {
