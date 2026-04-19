@@ -343,10 +343,10 @@
         <div class="logo-icon">🧠</div>
         Brain Health Dashboard
     </div>
-    <!-- FIX: moved nav links outside .logo div -->
+    
     <div style="display:flex; gap:10px; align-items:center;">
-        <a href="/" style="color:#4e73df; text-decoration:none; font-weight:bold; font-size:0.9rem;">🏠 Home</a>
-        <a href="/history" style="background:#4e73df; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:0.9rem;">📋 History</a>
+        <a href="index.html" style="color:#4e73df; text-decoration:none; font-weight:bold; font-size:0.9rem;">🏠 Home</a>
+        <a href="index_history.html" style="background:#4e73df; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:0.9rem;">📋 History</a>
     </div>
 </nav>
 
@@ -442,7 +442,7 @@
             </label>
         </div>
 
-        <button onclick="predict()">🔍 Run AI Diagnostics</button>
+        <button onclick="predict()"> Run AI Diagnostics</button>
         <div id="result"></div>
     </div>
 
@@ -563,7 +563,7 @@
         </div>
 
         <div class="callout">
-            <h4>⚠️ High-Risk Combinations to Watch</h4>
+            <h4> High-Risk Combinations to Watch</h4>
             <ul>
                 <li>Hypertension + Heart Disease</li>
                 <li>Age 65+ + Diabetes</li>
@@ -575,7 +575,7 @@
         </div>
 
         <div class="disclaimer">
-            ⚠️ <strong>Medical Disclaimer:</strong> This tool is for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified neurologist or cardiologist for stroke risk assessment.
+             <strong>Medical Disclaimer:</strong> This tool is for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified neurologist or cardiologist for stroke risk assessment.
         </div>
     </div>
 </div>
@@ -585,7 +585,7 @@
         const resultDiv = document.getElementById('result');
         resultDiv.style.display = 'block';
         resultDiv.className = '';
-        resultDiv.innerHTML = "⏳ Processing data...";
+        resultDiv.innerHTML = " Processing data...";
 
         fetch("/predict_stroke", {
             method: "POST",
@@ -608,17 +608,17 @@
         .then(data => {
             if (data.error) {
                 resultDiv.className = "";
-                resultDiv.innerHTML = `❌ Server Error: ${data.error}`;
+                resultDiv.innerHTML = ` Server Error: ${data.error}`;
                 return;
             }
 
             // FIX: correct disease name
             if (data.prediction === 0) {
                 resultDiv.className = "healthy";
-                resultDiv.innerHTML = `✅ Low Stroke Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
+                resultDiv.innerHTML = ` Low Stroke Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
             } else {
                 resultDiv.className = "risk";
-                resultDiv.innerHTML = `⚠️ Elevated Stroke Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
+                resultDiv.innerHTML = ` Elevated Stroke Risk Detected<br><span style="font-family:'DM Mono',monospace;font-size:0.8rem;">Confidence: ${data.confidence}%</span>`;
             }
 
             if (data.record_id) {
@@ -626,21 +626,21 @@
                     .then(res => res.json())
                     .then(record => {
                         if (record.id) {
-                            resultDiv.innerHTML += `<br><small style="color:green;">✅ Record #${record.id} saved to history.</small>`;
+                            resultDiv.innerHTML += `<br><small style="color:green;"> Record #${record.id} saved to history.</small>`;
                         } else {
-                            resultDiv.innerHTML += `<br><small style="color:orange;">⚠️ Prediction done but not saved to history.</small>`;
+                            resultDiv.innerHTML += `<br><small style="color:orange;"> Prediction done but not saved to history.</small>`;
                         }
                     })
                     .catch(() => {
-                        resultDiv.innerHTML += `<br><small style="color:orange;">⚠️ Could not verify history save.</small>`;
+                        resultDiv.innerHTML += `<br><small style="color:orange;"> Could not verify history save.</small>`;
                     });
             } else {
-                resultDiv.innerHTML += `<br><small style="color:red;">❌ Prediction done but data NOT saved to history.</small>`;
+                resultDiv.innerHTML += `<br><small style="color:red;"> Prediction done but data NOT saved to history.</small>`;
             }
         })
         .catch(err => {
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = "❌ Error connecting to server.";
+            resultDiv.innerHTML = " Error connecting to server.";
             console.error(err);
         });
     }
